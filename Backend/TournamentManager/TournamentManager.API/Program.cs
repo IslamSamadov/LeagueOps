@@ -1,9 +1,29 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;    
+using Microsoft.IdentityModel.Tokens; 
+using System.Text; 
 using Microsoft.EntityFrameworkCore;
 using TournamentManager.API.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
+            builder.Configuration.GetSection("JwtSettings:Key").Value!)),
+        ValidateIssuer = false, 
+        ValidateAudience = false 
+    };
+});
 
 builder.Services.AddControllers();
 
@@ -38,6 +58,7 @@ app.UseHttpsRedirection();
 
 app.UseCors("AllowAll");
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
