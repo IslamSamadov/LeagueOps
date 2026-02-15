@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;    
-using Microsoft.IdentityModel.Tokens; 
-using System.Text; 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens; 
+using Microsoft.OpenApi.Models;
+using System.Text; 
 using TournamentManager.API.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -28,7 +29,32 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
+    });
+
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
+});
 
 builder.Services.AddCors(options =>
 {
@@ -47,7 +73,7 @@ builder.Services.AddDbContext<AppDbContext>(opt =>
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Configure the HTTP request pipel ine.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

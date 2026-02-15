@@ -97,7 +97,7 @@ namespace TournamentManager.API.Controllers
             // We put it all together: Claims + Expiration + Signature.
             var token = new JwtSecurityToken(
                 claims: claims,
-                expires: DateTime.Now.AddDays(1), //Resets Token everyday
+                expires: DateTime.Now.AddDays(14), //Resets Token every two weeks
                 signingCredentials: creds
             );
 
