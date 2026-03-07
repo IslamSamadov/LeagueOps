@@ -103,5 +103,31 @@ namespace TournamentManager.API.Controllers
                 TournamentId = newTournament.Id
             });
         }
+        [HttpDelete("{id}")]
+        [Authorize]
+        public async Task<IActionResult> DeleteTournament(int id)
+        {
+            var userStringId = User.FindFirstValue("UserId");
+            if (!int.TryParse(userStringId, out var userId)) return Unauthorized();
+            var tournament = await _context.Tournaments.FirstOrDefaultAsync(t => t.Id == id);
+
+            if(tournament == null)
+            {
+                return NotFound();
+            }
+
+            if(userId != tournament.OrganizerId)
+            {
+                return StatusCode(403, new { Error = "Only tournament organizer can delete it." });
+            }
+
+            _context.Tournaments.Remove(tournament);
+            await _context.SaveChangesAsync();
+
+            return Ok(new
+            {
+                Message = $"Tournament '{tournament.Name}' was succesfully deleted.'"
+            });
+        }
     }
 }

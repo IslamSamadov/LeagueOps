@@ -2,7 +2,7 @@
 <html lang="zxx">
 
 <head>
-    <title>Game Warrior Template</title>
+    <title>League Ops</title>
     <meta charset="UTF-8" />
     <meta name="description" content="Game Warrior Template" />
     <meta name="keywords" content="warrior, game, creative, html" />
@@ -55,7 +55,29 @@
         </div>
     </header>
     <!-- Header section end -->
+    <section class="login-section" style="margin-top: 50px;">
+        <div class="container">
+            <div class="login-card"
+                style="background: #1f1f1f; padding: 40px; border-radius: 10px; max-width: 500px; margin: 0 auto;">
+                <h2 style="color: #ffb320; margin-bottom: 30px;">Create Organizer Account</h2>
 
+                <input type="text" id="reg-username" placeholder="Choose Username"
+                    style="width: 100%; padding: 10px; margin-bottom: 20px; background: #333; border: none; color: white;">
+                <input type="email" id="reg-email" placeholder="Email Address" required 
+                    style="width: 100%; padding: 10px; margin-bottom: 20px; background: #333; border: none; color: white;">
+                <input type="password" id="reg-password" placeholder="Password"
+                    style="width: 100%; padding: 10px; margin-bottom: 20px; background: #333; border: none; color: white;">
+                <input type="password" id="reg-confirm" placeholder="Confirm Password"
+                    style="width: 100%; padding: 10px; margin-bottom: 20px; background: #333; border: none; color: white;">
+
+                <button onclick="handleRegister()" class="site-btn" style="width: 100%;">Register</button>
+
+                <p id="error-msg" style="color: red; margin-top: 15px;"></p>
+                <p style="margin-top: 20px; color: white;">Already have an account? <a href="login.html"
+                        style="color: #ffb320;">Login here</a></p>
+            </div>
+        </div>
+    </section>
     <!-- Footer section -->
     <footer class="footer-section">
         <div class="container">
@@ -80,6 +102,72 @@
     <!-- Footer section end -->
 
     <!--====== Javascripts & Jquery ======-->
+<script>
+    async function handleRegister() {
+        // 1. Get form values
+        const username = document.getElementById('reg-username').value.trim();
+        const email = document.getElementById('reg-email').value.trim();
+        const password = document.getElementById('reg-password').value;
+        const confirm = document.getElementById('reg-confirm').value;
+        
+        const errorMsg = document.getElementById('error-msg');
+        const btn = document.querySelector('.site-btn');
+
+        // 2. Client-Side Validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (!username || !email || !password || !confirm) {
+            errorMsg.innerText = "All fields are required.";
+            return;
+        }
+        if (!emailRegex.test(email)) {
+            errorMsg.innerText = "Please enter a valid email address.";
+            return;
+        }
+        if (password.length < 8) {
+            errorMsg.innerText = "Password must be at least 8 characters.";
+            return;
+        }
+        if (password !== confirm) {
+            errorMsg.innerText = "Passwords do not match!";
+            return;
+        }
+
+        // 3. UI State: Loading
+        btn.disabled = true;
+        btn.innerText = "Registering...";
+        errorMsg.innerText = "";
+
+        // 4. API Request
+        try {
+            const response = await fetch('https://localhost:7169/api/Auth/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    Username: username, 
+                    Email: email, 
+                    Password: password 
+                })
+            });
+
+            // Parse response body safely
+            const result = await response.json().catch(() => ({}));
+
+            if (response.ok) {
+                alert("Account created successfully!");
+                window.location.href = 'login.html';
+            } else {
+                errorMsg.innerText = result.message || "Registration failed.";
+            }
+        } catch (err) {
+            console.error("Registration error:", err);
+            errorMsg.innerText = "System unreachable. Is the API running?";
+        } finally {
+            btn.disabled = false;
+            btn.innerText = "Register";
+        }
+    }
+</script>
     <script src="js/jquery-3.2.1.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/owl.carousel.min.js"></script>

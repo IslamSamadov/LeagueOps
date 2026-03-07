@@ -32,7 +32,7 @@ namespace TournamentManager.API.Controllers
                 .Include(t => t.Matches)
                 .FirstOrDefaultAsync(t => t.Id == tournamentId);
 
-            if (tournament == null) return NotFound(new { Error = $"Tournament with {tournamentId} was not found." });
+            if (tournament == null) return NotFound(new { Error = $"Tournament with was not found." });
 
             if (tournament.OrganizerId != userId)
             {

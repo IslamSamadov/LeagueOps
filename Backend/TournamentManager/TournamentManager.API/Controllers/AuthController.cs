@@ -29,7 +29,7 @@ namespace TournamentManager.API.Controllers
         {
             if (await _context.Users.AnyAsync(u => u.Username == request.Username))
             {
-                return BadRequest("Username already exists!");
+                return BadRequest(new { Error = "Username already exists!"});
             }
 
             string passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
@@ -45,7 +45,7 @@ namespace TournamentManager.API.Controllers
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
-            return Ok("User registered successfully!");
+            return Ok(new { Message = "User registered successfully!" });
         }
 
 
@@ -55,16 +55,16 @@ namespace TournamentManager.API.Controllers
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == request.Username);
             if (user == null)
             {
-                return BadRequest("User not found");
+                return BadRequest(new { message = "User not found" });
             }
 
             if (!BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
             {
-                return BadRequest("Wrong password.");
+                return BadRequest(new { message = "Wrong password." });
             }
 
             string token = CreateToken(user);
-            return Ok(token);
+            return Ok(new { token = token });
         }
 
         //Create Token
