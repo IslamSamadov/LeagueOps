@@ -1,9 +1,9 @@
 ﻿namespace TournamentManager.API.DTOs
 {
-    public class TeamResponseDto
+    public class PlayerResponseDto
     {
         public int Id { get; set; }
         public string? Name { get; set; }
-        public List<PlayerResponseDto> Players { get; set; } = new List<PlayerResponseDto>();
+        public string? InGameId { get; set; }
     }
 }

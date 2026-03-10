@@ -315,6 +315,51 @@
       </div>
     </div>
 
+    <div
+      class="modal fade"
+      id="addPlayerModal"
+      tabindex="-1"
+      role="dialog"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Add New Player</h5>
+          </div>
+          <div class="modal-body">
+            <input type="hidden" id="modal-team-id" />
+            <div class="form-group">
+              <label>Player Name</label>
+              <input
+                type="text"
+                id="modal-name"
+                class="form-control"
+                placeholder="Enter name"
+              />
+            </div>
+            <div class="form-group">
+              <label>In-Game ID</label>
+              <input
+                type="text"
+                id="modal-igid"
+                class="form-control"
+                placeholder="Enter ID"
+              />
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" data-dismiss="modal">
+              Close
+            </button>
+            <button class="btn btn-primary" onclick="submitPlayer()">
+              Save Player
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <script>
       function logout() {
         // 1. Clear the token
@@ -438,11 +483,11 @@
         // 1. Update Basic Info
         document.getElementById("tourney-name").innerText = t.name;
         document.getElementById("tourney-info").innerHTML = `
-        <p><strong>Game:</strong> ${t.game}</p>
-        <p><strong>Date:</strong> ${new Date(t.startDate).toLocaleDateString()}</p>
-        <p><strong>Max Teams:</strong> ${t.maxTeams}</p>
-        <p><strong>Status:</strong> <span class="badge badge-primary">${t.status}</span></p>
-    `;
+          <p><strong>Game:</strong> ${t.game}</p>
+          <p><strong>Date:</strong> ${new Date(t.startDate).toLocaleDateString()}</p>
+          <p><strong>Max Teams:</strong> ${t.maxTeams}</p>
+          <p><strong>Status:</strong> <span class="badge badge-primary">${t.status}</span></p>
+      `;
 
         // 2. Control visibility of Add Team card
         const addTeamCard = document.getElementById("add-team-card");
@@ -477,13 +522,29 @@
           tbody.innerHTML = t.teams
             .map(
               (team) => `
-            <tr>
-                <td>${team.name}</td>
-                <td>
-                    0
-                </td>
-            </tr>
-        `,
+    <tr data-team-id="${team.id}">
+        <td>
+            <strong>${team.name}</strong>
+            <div id="players-list-${team.id}" style="display:none; font-size: 0.85em; color: #555;">
+                ${
+                  team.players && team.players.length > 0
+                    ? team.players
+                        .map((p) => `• ${p.name} (${p.inGameId})`)
+                        .join("<br>")
+                    : "<em>No players yet</em>"
+                }
+            </div>
+        </td>
+        <td>
+            <button class="btn btn-sm btn-info" onclick="togglePlayers(${team.id})">View</button>
+            ${
+              isOrganizer && t.status === "Draft"
+                ? `<button class="btn btn-sm btn-primary ml-2" onclick="openAddPlayerModal(${team.id})">+</button>`
+                : ""
+            }
+        </td>
+    </tr>
+`,
             )
             .join("");
         }
@@ -505,34 +566,58 @@
                 t.status === "Completed" && m.winnerTeamId === m.teamBId;
 
               return `
-            <div class="p-3 border mb-3 rounded bg-white shadow-sm">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <span class="badge badge-secondary">Round ${m.roundNumber}</span>
-                        <div class="mt-2">
-                            <button class="btn btn-sm ${showButtons ? "btn-outline-success" : "btn-light"} ${isWinnerA ? "champion-highlight" : ""}" 
-                                    ${showButtons ? `onclick="resolveMatch(${m.id}, ${m.teamAId})"` : "disabled"}>
-                                ${m.teamAName}
-                            </button> 
-                            <span class="mx-2">vs</span> 
-                            ${
-                              m.teamBId
-                                ? `<button class="btn btn-sm ${showButtons ? "btn-outline-success" : "btn-light"} ${isWinnerB ? "champion-highlight" : ""}" 
-                                          ${showButtons ? `onclick="resolveMatch(${m.id}, ${m.teamBId})"` : "disabled"}>
-                                    ${m.teamBName}
-                                </button>`
-                                : "BYE"
-                            }
-                        </div>
-                    </div>
-                    ${hasWinner ? `<div class="text-success font-weight-bold">✓ ${m.winnerName}</div>` : ""}
-                </div>
-            </div>`;
+              <div class="p-3 border mb-3 rounded bg-white shadow-sm">
+                  <div class="d-flex justify-content-between align-items-center">
+                      <div>
+                          <span class="badge badge-secondary">Round ${m.roundNumber}</span>
+                          <div class="mt-2">
+                              <button class="btn btn-sm ${showButtons ? "btn-outline-success" : "btn-light"} ${isWinnerA ? "champion-highlight" : ""}"
+                                      ${showButtons ? `onclick="resolveMatch(${m.id}, ${m.teamAId})"` : "disabled"}>
+                                  ${m.teamAName}
+                              </button>
+                              <span class="mx-2">vs</span>
+                              ${
+                                m.teamBId
+                                  ? `<button class="btn btn-sm ${showButtons ? "btn-outline-success" : "btn-light"} ${isWinnerB ? "champion-highlight" : ""}"
+                                            ${showButtons ? `onclick="resolveMatch(${m.id}, ${m.teamBId})"` : "disabled"}>
+                                      ${m.teamBName}
+                                  </button>`
+                                  : "BYE"
+                              }
+                          </div>
+                      </div>
+                      ${hasWinner ? `<div class="text-success font-weight-bold">✓ ${m.winnerName}</div>` : ""}
+                  </div>
+              </div>`;
             })
             .join("");
         }
       }
+      function togglePlayers(teamId) {
+        const list = document.getElementById(`players-list-${teamId}`);
+        list.style.display = list.style.display === "none" ? "block" : "none";
+      }
+      async function loadTournamentDetails() {
+        const params = new URLSearchParams(window.location.search);
+        const id = params.get("id");
 
+        // Adding a timestamp ensures the browser sees this as a 'new' request every time
+        const timestamp = new Date().getTime();
+
+        const response = await fetch(
+          `https://localhost:7169/api/Tournament/${id}?t=${timestamp}`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+              "Cache-Control": "no-cache", // Explicitly tell browser not to cache
+              Pragma: "no-cache",
+            },
+          },
+        );
+
+        const data = await response.json();
+        renderTournament(data);
+      }
       async function generateBracket() {
         const urlParams = new URLSearchParams(window.location.search);
         const tourneyId = urlParams.get("id");
@@ -593,30 +678,68 @@
           alert("Error connecting to server.");
         }
       }
+      // 1. Open the modal and store the Team ID
+      function openAddPlayerModal(teamId) {
+        document.getElementById("modal-team-id").value = teamId;
+        $("#addPlayerModal").modal("show");
+      }
+
+      // 2. The actual API submission
+      async function submitPlayer() {
+        const teamId = document.getElementById("modal-team-id").value;
+        const name = document.getElementById("modal-name").value;
+        const inGameId = document.getElementById("modal-igid").value;
+
+        const response = await fetch("https://localhost:7169/api/Player/add", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify({ teamId, name, inGameId }),
+        });
+
+        if (response.ok) {
+          $("#addPlayerModal").modal("hide");
+
+          // INSTANT UPDATE: Find the specific row and increment its counter
+          const row = document.querySelector(`tr[data-team-id="${teamId}"]`);
+          const counterSpan = document.getElementById(`player-count-${teamId}`);
+          if (counterSpan) {
+            counterSpan.innerText = parseInt(counterSpan.innerText) + 1;
+          } else {
+            // If we can't find it easily, just reload once
+            await loadTournamentDetails();
+          }
+        } else {
+          const error = await response.json();
+          alert("Error: " + (error.message || "Failed to add player"));
+        }
+      }
       // Function to trigger when the "Add Player" button is clicked
-    //   async function addPlayerPrompt(teamId) {
-    //     const playerName = prompt("Enter player name:");
-    //     const inGameId = prompt("Enter In-Game ID:");
+      //   async function addPlayerPrompt(teamId) {
+      //     const playerName = prompt("Enter player name:");
+      //     const inGameId = prompt("Enter In-Game ID:");
 
-    //     if (playerName && inGameId) {
-    //       const response = await fetch("/api/Player/add", {
-    //         method: "POST",
-    //         headers: {
-    //           "Content-Type": "application/json",
-    //           Authorization: `Bearer ${localStorage.getItem("token")}`, // Ensure you send the token
-    //         },
-    //         body: JSON.stringify({ teamId, name: playerName, inGameId }),
-    //       });
+      //     if (playerName && inGameId) {
+      //       const response = await fetch("/api/Player/add", {
+      //         method: "POST",
+      //         headers: {
+      //           "Content-Type": "application/json",
+      //           Authorization: `Bearer ${localStorage.getItem("token")}`, // Ensure you send the token
+      //         },
+      //         body: JSON.stringify({ teamId, name: playerName, inGameId }),
+      //       });
 
-    //       if (response.ok) {
-    //         alert("Player added successfully!");
-    //         location.reload(); // Simple way to refresh the data
-    //       } else {
-    //         const error = await response.json();
-    //         alert(error.error);
-    //       }
-    //     }
-    //   }
+      //       if (response.ok) {
+      //         alert("Player added successfully!");
+      //         location.reload(); // Simple way to refresh the data
+      //       } else {
+      //         const error = await response.json();
+      //         alert(error.error);
+      //       }
+      //     }
+      //   }
     </script>
     <!-- Bootstrap core JavaScript-->
     <script src="https://cdn.jsdelivr.net/npm/jwt-decode/build/jwt-decode.min.js"></script>

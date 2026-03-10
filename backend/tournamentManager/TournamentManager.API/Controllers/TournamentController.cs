@@ -76,6 +76,7 @@ namespace TournamentManager.API.Controllers
             var tournament = await _context.Tournaments
                 .Include(t => t.Organizer)
                 .Include(t => t.Teams)
+                    .ThenInclude(tm => tm.Players)
                 .Include(t => t.Matches)
                     .ThenInclude(m => m.TeamA)
                 .Include(t => t.Matches)
@@ -104,7 +105,13 @@ namespace TournamentManager.API.Controllers
                 Teams = tournament.Teams?.Select(team => new TeamResponseDto
                 {
                     Id = team.Id,
-                    Name = team.Name
+                    Name = team.Name,
+                    Players = team.Players?.Select(p => new PlayerResponseDto
+                    {
+                        Id = p.Id,
+                        Name = p.Name,
+                        InGameId = p.InGameId
+                    }).ToList() ?? new List<PlayerResponseDto>()
                 }).ToList() ?? new List<TeamResponseDto>(),
                 Matches = tournament.Matches?.Select(m => new MatchResponseDto
                 {
