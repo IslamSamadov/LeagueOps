@@ -20,9 +20,9 @@ namespace TournamentManager.API.Controllers
             this._context = context;
         }
 
-        [HttpPost]
+        [HttpPost("add")]
         [Authorize]
-        public async Task<IActionResult> AddPlayerToTeam(PlayerCreateDto request)
+        public async Task<IActionResult> AddPlayerToTeam([FromBody] PlayerCreateDto request)
         {
             var userIdString = User.FindFirstValue("UserId");
             if (!int.TryParse(userIdString, out var userId)) return Unauthorized();

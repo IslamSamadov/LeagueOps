@@ -91,7 +91,7 @@
         <div id="content">
           <!-- Topbar -->
           <nav
-            class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow"
+            class="navbar navbar-expand navbar-light topbar mb-4 static-top shadow"
           >
             <!-- Sidebar Toggle (Topbar) -->
             <button
@@ -179,7 +179,7 @@
                 <div class="row">
                   <div
                     id="champion-banner"
-                    style="display: none; height: 100px; margin-bottom: 50px;"
+                    style="display: none; height: 100px; margin-bottom: 50px"
                     class="alert alert-warning text-center"
                   >
                     <h3>
@@ -479,7 +479,9 @@
               (team) => `
             <tr>
                 <td>${team.name}</td>
-                <td>${team.players ? team.players.length : 0}</td>
+                <td>
+                    0
+                </td>
             </tr>
         `,
             )
@@ -591,6 +593,30 @@
           alert("Error connecting to server.");
         }
       }
+      // Function to trigger when the "Add Player" button is clicked
+    //   async function addPlayerPrompt(teamId) {
+    //     const playerName = prompt("Enter player name:");
+    //     const inGameId = prompt("Enter In-Game ID:");
+
+    //     if (playerName && inGameId) {
+    //       const response = await fetch("/api/Player/add", {
+    //         method: "POST",
+    //         headers: {
+    //           "Content-Type": "application/json",
+    //           Authorization: `Bearer ${localStorage.getItem("token")}`, // Ensure you send the token
+    //         },
+    //         body: JSON.stringify({ teamId, name: playerName, inGameId }),
+    //       });
+
+    //       if (response.ok) {
+    //         alert("Player added successfully!");
+    //         location.reload(); // Simple way to refresh the data
+    //       } else {
+    //         const error = await response.json();
+    //         alert(error.error);
+    //       }
+    //     }
+    //   }
     </script>
     <!-- Bootstrap core JavaScript-->
     <script src="https://cdn.jsdelivr.net/npm/jwt-decode/build/jwt-decode.min.js"></script>
