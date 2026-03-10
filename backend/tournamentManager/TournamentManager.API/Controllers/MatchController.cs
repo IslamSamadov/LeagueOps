@@ -77,7 +77,7 @@ namespace TournamentManager.API.Controllers
                 TotalTeams = shuffledTeams.Count
             });
         }
-        [HttpPost("{match}/resolve")]
+        [HttpPost("{matchId}/resolve")]
         [Authorize]
         public async Task<IActionResult> ResolveMatch(int matchId, [FromBody] MatchResolveDto request)
         {
@@ -91,24 +91,27 @@ namespace TournamentManager.API.Controllers
 
             if (match == null) return NotFound(new { Error = $"Match not found." });
 
-            if (match.Tournament!.OrganizerId != userId) return StatusCode(403, new { Error = "Onlt organizer can set match winners." });
+            if (match.Tournament!.OrganizerId != userId) return StatusCode(403, new { Error = "Only organizer can set match winners." });
 
             if (request.winnerId != match.TeamAId && request.winnerId != match.TeamBId) return BadRequest(new { Error = "The winner must be from the teams in this match." });
 
-            match.WinnerTeamId = matchId;
+            match.WinnerTeamId = request.winnerId;
             await _context.SaveChangesAsync();
 
             //Automatic next round logic
 
-            var currentRoundMatches = match.Tournament!.Matches!
-                .Where(m => m.RoundNumber == match.RoundNumber)
-                .ToList();
+            var currentRoundMatches = await _context.Matches
+               .Where(m => m.TournamentId == match.TournamentId && m.RoundNumber == match.RoundNumber)
+               .ToListAsync();
 
-            bool isRoundFinished = currentRoundMatches.Any(m => m.WinnerTeamId != null);
+            bool isRoundFinished = currentRoundMatches.All(m => m.WinnerTeamId != null);
 
             if (isRoundFinished)
             {
-                var advancingTeams = currentRoundMatches.Select(m => m.WinnerTeamId!.Value).ToList();
+                var advancingTeams = currentRoundMatches
+                    .Where(m => m.WinnerTeamId.HasValue) 
+                    .Select(m => m.WinnerTeamId!.Value)
+                    .ToList();
 
                 //If its finale declare winner
 

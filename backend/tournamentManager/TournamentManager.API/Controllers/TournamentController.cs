@@ -24,6 +24,7 @@ namespace TournamentManager.API.Controllers
         {
             var tournaments = await _context.Tournaments
                 .Include(t => t.Organizer)
+                .Include(t => t.Teams)
                 .Select(t => new TournamentResponseDto
                 {
                     Id = t.Id,
@@ -32,6 +33,7 @@ namespace TournamentManager.API.Controllers
                     StartDate = t.StartDate,
                     MaxTeams = t.MaxTeams,
                     Status = t.Status,
+                    TeamCount = t.Teams != null ? t.Teams.Count() : 0,
                     OrganizerName = t.Organizer != null ? t.Organizer.Username : "Unknown"
                 })
                 .ToListAsync();
@@ -39,18 +41,54 @@ namespace TournamentManager.API.Controllers
             return Ok(tournaments);
         }
 
+        [HttpGet("my")]
+        [Authorize]
+        public async Task<IActionResult> GetMyTournaments()
+        {
+            // 1. Extract the UserId from the JWT token
+            var userStringId = User.FindFirstValue("UserId");
+            if (!int.TryParse(userStringId, out var userId)) return Unauthorized();
+
+            // 2. Filter the database query
+            var tournaments = await _context.Tournaments
+                    .Where(t => t.OrganizerId == userId)
+                    .Include(t => t.Teams) // Ensure Teams are loaded for the count
+                    .Select(t => new TournamentResponseDto
+                    {
+                        Id = t.Id,
+                        Name = t.Name,
+                        Game = t.Game,
+                        StartDate = t.StartDate,
+                        MaxTeams = t.MaxTeams,
+                        Status = t.Status,
+                        TeamCount = t.Teams != null ? t.Teams.Count() : 0,
+                        OrganizerName = t.Organizer != null ? t.Organizer.Username : "Unknown"
+                    })
+                    .ToListAsync();
+
+            return Ok(tournaments);
+        }
+
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetTournamentById(int id)
         {
             var tournament = await _context.Tournaments
                 .Include(t => t.Organizer)
                 .Include(t => t.Teams)
+                .Include(t => t.Matches)
+                    .ThenInclude(m => m.TeamA)
+                .Include(t => t.Matches)
+                    .ThenInclude(m => m.TeamB)
                 .FirstOrDefaultAsync(t => t.Id == id);
 
-            if(tournament == null)
+            if (tournament == null)
             {
                 return NotFound($"Tournament with ID {id} was not found.");
             }
+
+            var userStringId = User.FindFirstValue("UserId");
+            bool isOrganizer = int.TryParse(userStringId, out var userId) && tournament.OrganizerId == userId;
 
             var response = new TournamentDetailResponseDto
             {
@@ -60,20 +98,34 @@ namespace TournamentManager.API.Controllers
                 StartDate = tournament.StartDate,
                 MaxTeams = tournament.MaxTeams,
                 Status = tournament.Status,
+                OrganizerId = tournament.OrganizerId,
                 OrganizerName = tournament.Organizer?.Username ?? "Unknown",
+                IsOrganizer = isOrganizer,
                 Teams = tournament.Teams?.Select(team => new TeamResponseDto
                 {
                     Id = team.Id,
                     Name = team.Name
-                }).ToList() ?? new List<TeamResponseDto>()
+                }).ToList() ?? new List<TeamResponseDto>(),
+                Matches = tournament.Matches?.Select(m => new MatchResponseDto
+                {
+                    Id = m.Id,
+                    RoundNumber = m.RoundNumber,
+                    TeamAId = m.TeamAId,
+                    TeamAName = m.TeamA?.Name ?? "TBD",
+                    TeamBId = m.TeamBId,
+                    TeamBName = m.TeamB?.Name ?? "TBD",
+                    WinnerTeamId = m.WinnerTeamId,
+                    WinnerName = m.WinnerTeam?.Name,
+                    NextMatchId = m.NextMatchId
+                }).OrderBy(m => m.RoundNumber).ToList() ?? new List<MatchResponseDto>()
             };
-            
+
             return Ok(response);
         }
 
 
         [HttpPost]
-        [Authorize] 
+        [Authorize]
         public async Task<IActionResult> CreateTournament(TournamentCreateDto request)
         {
             //1. Read the JWT Token to find out WHO is making this request
@@ -111,12 +163,12 @@ namespace TournamentManager.API.Controllers
             if (!int.TryParse(userStringId, out var userId)) return Unauthorized();
             var tournament = await _context.Tournaments.FirstOrDefaultAsync(t => t.Id == id);
 
-            if(tournament == null)
+            if (tournament == null)
             {
                 return NotFound();
             }
 
-            if(userId != tournament.OrganizerId)
+            if (userId != tournament.OrganizerId)
             {
                 return StatusCode(403, new { Error = "Only tournament organizer can delete it." });
             }

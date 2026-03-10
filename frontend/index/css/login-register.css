@@ -3,6 +3,7 @@ body {
     display: flex;
     flex-direction: column; /* Stacks children vertically */
     margin: 0; /* Optional: removes default body margin */
+    background-color: #181a1b;
 }
 
 .footer-section{

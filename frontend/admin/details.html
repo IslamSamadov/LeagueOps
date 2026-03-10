@@ -1,0 +1,613 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+
+    <title>SB Admin 2 - Dashboard</title>
+
+    <!-- Custom fonts for this template-->
+    <link
+      href="vendor/fontawesome-free/css/all.min.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+      rel="stylesheet"
+    />
+
+    <!-- Custom styles for this template-->
+    <link href="css/sb-admin-2.min.css" rel="stylesheet" />
+    <style>
+      body {
+        display: none;
+      }
+    </style>
+    <script src="js/auth-guard.js"></script>
+  </head>
+
+  <body id="page-top">
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+      <!-- Sidebar -->
+      <ul
+        class="navbar-nav sidebar sidebar-dark accordion"
+        id="accordionSidebar"
+        style="background-color: #0c0d0d !important"
+      >
+        <!-- Sidebar - Brand -->
+        <a
+          class="sidebar-brand d-flex align-items-center justify-content-center"
+          href="../index/index.html"
+        >
+          <div class="sidebar-brand-text mx-3">
+            <span style="color: white">League</span
+            ><span style="color: #eda61e">Ops</span>
+          </div>
+        </a>
+
+        <!-- Divider -->
+        <hr class="sidebar-divider my-0" />
+
+        <!-- Nav Item - Dashboard -->
+        <li class="nav-item active">
+          <a class="nav-link" href="index.html">
+            <span>Tournaments List</span></a
+          >
+        </li>
+
+        <!-- Divider -->
+        <hr class="sidebar-divider" />
+        <!-- Nav Item - Utilities Collapse Menu -->
+        <li class="nav-item">
+          <a class="nav-link collapsed" href="../admin/create.html">
+            <i class="fas fa-fw fa-wrench"></i>
+            <span>Create</span>
+          </a>
+        </li>
+
+        <!-- Divider -->
+        <hr class="sidebar-divider d-none d-md-block" />
+
+        <!-- Sidebar Toggler (Sidebar) -->
+        <div class="text-center d-none d-md-inline">
+          <button class="rounded-circle border-0" id="sidebarToggle"></button>
+        </div>
+
+        <!-- Sidebar Message -->
+      </ul>
+      <!-- End of Sidebar -->
+
+      <!-- Content Wrapper -->
+      <div id="content-wrapper" class="d-flex flex-column">
+        <!-- Main Content -->
+        <div id="content">
+          <!-- Topbar -->
+          <nav
+            class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow"
+          >
+            <!-- Sidebar Toggle (Topbar) -->
+            <button
+              id="sidebarToggleTop"
+              class="btn btn-link d-md-none rounded-circle mr-3"
+            >
+              <i class="fa fa-bars"></i>
+            </button>
+            <div
+              class="d-flex align-items-center justify-content-between mb-4"
+              style="margin-top: 30px"
+            >
+              <h1 class="h3 mb-0 text-gray-800" style="margin-right: 20px">
+                Tournament
+              </h1>
+            </div>
+            <!-- Topbar Search -->
+
+            <!-- Topbar Navbar -->
+            <ul class="navbar-nav ml-auto">
+              <!-- Nav Item - Search Dropdown (Visible Only XS) -->
+
+              <div class="topbar-divider d-none d-sm-block"></div>
+
+              <!-- Nav Item - User Information -->
+              <li class="nav-item dropdown no-arrow">
+                <a
+                  class="nav-link dropdown-toggle"
+                  href="#"
+                  id="userDropdown"
+                  role="button"
+                  data-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                >
+                  <span
+                    class="mr-2 d-none d-lg-inline text-gray-600 small"
+                    id="user-display-name"
+                  >
+                    Loading...
+                  </span>
+                </a>
+                <!-- Dropdown - User Information -->
+                <div
+                  class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                  aria-labelledby="userDropdown"
+                >
+                  <a
+                    class="dropdown-item"
+                    href="#"
+                    data-toggle="modal"
+                    data-target="#logoutModal"
+                  >
+                    <i
+                      class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"
+                    ></i>
+                    Logout
+                  </a>
+                </div>
+              </li>
+            </ul>
+          </nav>
+          <!-- End of Topbar -->
+
+          <!-- Begin Page Content -->
+          <div class="container-fluid">
+            <!-- Page Heading -->
+
+            <!-- Content Row -->
+            <div class="row">
+              <div class="container-fluid">
+                <div
+                  class="d-sm-flex align-items-center justify-content-between mb-4"
+                >
+                  <h1 class="h3 mb-0 text-gray-800" id="tourney-name"></h1>
+                  <div id="admin-controls" style="display: none">
+                    <button
+                      class="btn btn-success shadow-sm"
+                      onclick="generateBracket()"
+                    >
+                      <i class="fas fa-sitemap fa-sm"></i> Generate Bracket
+                    </button>
+                  </div>
+                </div>
+                <div class="row">
+                  <div
+                    id="champion-banner"
+                    style="display: none; height: 100px; margin-bottom: 50px;"
+                    class="alert alert-warning text-center"
+                  >
+                    <h3>
+                      🏆 Tournament Winner: <span id="winner-name"></span>!
+                    </h3>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-lg-4">
+                    <div class="card shadow mb-4">
+                      <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">
+                          Information
+                        </h6>
+                      </div>
+                      <div class="card-body" id="tourney-info"></div>
+                    </div>
+
+                    <div class="card shadow mb-4" id="add-team-card">
+                      <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">
+                          Add New Team
+                        </h6>
+                      </div>
+                      <div class="card-body">
+                        <div class="form-inline">
+                          <input
+                            type="text"
+                            id="team-name-input"
+                            class="form-control mr-2"
+                            placeholder="Team Name"
+                          />
+                          <button
+                            class="btn btn-primary"
+                            onclick="createTeam()"
+                          >
+                            Add Team
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-lg-8">
+                    <div class="card shadow mb-4">
+                      <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">
+                          Tournament Bracket
+                        </h6>
+                      </div>
+                      <div class="card-body"><div id="bracket-view"></div></div>
+                    </div>
+
+                    <div class="card shadow mb-4">
+                      <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">
+                          Registered Teams
+                        </h6>
+                      </div>
+                      <div class="card-body">
+                        <div class="table-responsive">
+                          <table class="table table-bordered">
+                            <thead>
+                              <tr>
+                                <th>Team Name</th>
+                                <th>Players</th>
+                              </tr>
+                            </thead>
+                            <tbody id="teams-list"></tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Content Column -->
+            </div>
+          </div>
+          <!-- /.container-fluid -->
+        </div>
+        <!-- End of Main Content -->
+
+        <!-- Footer -->
+        <!-- End of Footer -->
+      </div>
+      <!-- End of Content Wrapper -->
+    </div>
+    <!-- End of Page Wrapper -->
+
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+      <i class="fas fa-angle-up"></i>
+    </a>
+
+    <!-- Logout Modal-->
+    <div
+      class="modal fade"
+      id="logoutModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+            <button
+              class="close"
+              type="button"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            Select "Logout" below if you are ready to end your current session.
+          </div>
+          <div class="modal-footer">
+            <button
+              class="btn btn-secondary"
+              type="button"
+              data-dismiss="modal"
+            >
+              Cancel
+            </button>
+            <a class="btn btn-primary" href="#" onclick="logout()">Logout</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function logout() {
+        // 1. Clear the token
+        localStorage.removeItem("token");
+
+        // 2. Redirect to index
+        window.location.href = "../index/index.html";
+      }
+
+      function displayUser() {
+        const token = localStorage.getItem("token");
+        if (token) {
+          try {
+            const decoded = jwt_decode(token);
+
+            // JWT claims usually use these keys for the username:
+            const username =
+              decoded[
+                "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"
+              ] ||
+              decoded.unique_name ||
+              decoded.sub;
+
+            if (username) {
+              document.getElementById("user-display-name").innerText = username;
+            }
+          } catch (error) {
+            console.error("Invalid token", error);
+          }
+        }
+      }
+
+      // Call this when the page loads
+      document.addEventListener("DOMContentLoaded", displayUser);
+
+      document.addEventListener("DOMContentLoaded", async () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const tourneyId = urlParams.get("id");
+
+        if (!tourneyId) {
+          window.location.href = "index.html";
+          return;
+        }
+
+        const token = localStorage.getItem("token");
+
+        try {
+          const response = await fetch(
+            `https://localhost:7169/api/Tournament/${tourneyId}`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            },
+          );
+
+          if (!response.ok) throw new Error("Could not find tournament");
+
+          const data = await response.json();
+          renderTournament(data);
+        } catch (err) {
+          alert(err.message);
+        }
+      });
+
+      async function createTeam() {
+        const teamName = document.getElementById("team-name-input").value;
+        const urlParams = new URLSearchParams(window.location.search);
+        const tournamentId = urlParams.get("id");
+        const token = localStorage.getItem("token");
+
+        if (!teamName) {
+          alert("Please enter a team name.");
+          return;
+        }
+
+        try {
+          const response = await fetch("https://localhost:7169/api/Team", {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              name: teamName,
+              tournamentId: parseInt(tournamentId),
+            }),
+          });
+
+          const result = await response.json();
+
+          if (response.ok) {
+            alert(result.message);
+            location.reload(); // Refresh to see the new team in the list
+          } else {
+            alert(result.error || "Failed to add team.");
+          }
+        } catch (err) {
+          alert("Error connecting to server.");
+        }
+      }
+      // You'll need the user's ID from the token to check if they are the organizer
+      function getUserIdFromToken() {
+        const token = localStorage.getItem("token");
+        if (!token) return null;
+        const payload = JSON.parse(atob(token.split(".")[1]));
+        // Adjust key if necessary (e.g., 'UserId' or 'sub')
+        return parseInt(payload.UserId || payload.sub);
+      }
+
+      function renderTournament(t) {
+        const currentUserId = getUserIdFromToken();
+        // Ensure this matches the name in your token exactly!
+        const isOrganizer =
+          t.organizerName ===
+          document.getElementById("user-display-name").innerText;
+
+        console.log("Current User ID from Token:", currentUserId);
+        console.log("Tournament Organizer ID from API:", t.organizerId);
+        console.log("Is Organizer boolean:", isOrganizer);
+        console.log("Current Tournament Status:", t.status);
+
+        // 1. Update Basic Info
+        document.getElementById("tourney-name").innerText = t.name;
+        document.getElementById("tourney-info").innerHTML = `
+        <p><strong>Game:</strong> ${t.game}</p>
+        <p><strong>Date:</strong> ${new Date(t.startDate).toLocaleDateString()}</p>
+        <p><strong>Max Teams:</strong> ${t.maxTeams}</p>
+        <p><strong>Status:</strong> <span class="badge badge-primary">${t.status}</span></p>
+    `;
+
+        // 2. Control visibility of Add Team card
+        const addTeamCard = document.getElementById("add-team-card");
+        if (addTeamCard) {
+          addTeamCard.style.display = t.status === "Draft" ? "block" : "none";
+        }
+
+        // 3. Show Generate Button only if Organizer and Draft
+        const adminControls = document.getElementById("admin-controls");
+        adminControls.style.display =
+          isOrganizer && t.status === "Draft" ? "block" : "none";
+
+        const championBanner = document.getElementById("champion-banner");
+        if (t.status === "Completed") {
+          // Find the final match to get the winner's name
+          const finalMatch = t.matches.find(
+            (m) => m.winnerTeamId !== null && m.winnerName !== null,
+          );
+          if (finalMatch) {
+            document.getElementById("winner-name").innerText =
+              finalMatch.winnerName;
+            championBanner.style.display = "flex";
+            championBanner.style.alignItems = "center";
+          }
+        } else {
+          championBanner.style.display = "none";
+        }
+
+        // 4. Render Teams
+        const tbody = document.getElementById("teams-list");
+        if (tbody) {
+          tbody.innerHTML = t.teams
+            .map(
+              (team) => `
+            <tr>
+                <td>${team.name}</td>
+                <td>${team.players ? team.players.length : 0}</td>
+            </tr>
+        `,
+            )
+            .join("");
+        }
+
+        // 5. Render Bracket (Updated with Champion Highlight)
+        const bracketDiv = document.getElementById("bracket-view");
+        if (!t.matches || t.matches.length === 0) {
+          bracketDiv.innerHTML = `<p class="text-muted">No matches generated yet.</p>`;
+        } else {
+          bracketDiv.innerHTML = t.matches
+            .map((m) => {
+              const hasWinner = !!m.winnerName;
+              const showButtons = isOrganizer && !hasWinner;
+
+              // Logic to highlight if this is a completed tournament and this team won
+              const isWinnerA =
+                t.status === "Completed" && m.winnerTeamId === m.teamAId;
+              const isWinnerB =
+                t.status === "Completed" && m.winnerTeamId === m.teamBId;
+
+              return `
+            <div class="p-3 border mb-3 rounded bg-white shadow-sm">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <span class="badge badge-secondary">Round ${m.roundNumber}</span>
+                        <div class="mt-2">
+                            <button class="btn btn-sm ${showButtons ? "btn-outline-success" : "btn-light"} ${isWinnerA ? "champion-highlight" : ""}" 
+                                    ${showButtons ? `onclick="resolveMatch(${m.id}, ${m.teamAId})"` : "disabled"}>
+                                ${m.teamAName}
+                            </button> 
+                            <span class="mx-2">vs</span> 
+                            ${
+                              m.teamBId
+                                ? `<button class="btn btn-sm ${showButtons ? "btn-outline-success" : "btn-light"} ${isWinnerB ? "champion-highlight" : ""}" 
+                                          ${showButtons ? `onclick="resolveMatch(${m.id}, ${m.teamBId})"` : "disabled"}>
+                                    ${m.teamBName}
+                                </button>`
+                                : "BYE"
+                            }
+                        </div>
+                    </div>
+                    ${hasWinner ? `<div class="text-success font-weight-bold">✓ ${m.winnerName}</div>` : ""}
+                </div>
+            </div>`;
+            })
+            .join("");
+        }
+      }
+
+      async function generateBracket() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const tourneyId = urlParams.get("id");
+        const token = localStorage.getItem("token");
+
+        // NOTICE: Route changed to /api/Match/generate/
+        try {
+          const response = await fetch(
+            `https://localhost:7169/api/Match/generate/${tourneyId}`,
+            {
+              method: "POST",
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            },
+          );
+
+          if (response.ok) {
+            const result = await response.json();
+            alert(result.message);
+            location.reload();
+          } else {
+            const error = await response.json();
+            alert(error.error || "Generation failed.");
+          }
+        } catch (err) {
+          alert("Error connecting to MatchController.");
+        }
+      }
+      async function resolveMatch(matchId, winnerId) {
+        if (!confirm("Are you sure you want to set this team as the winner?"))
+          return;
+
+        const token = localStorage.getItem("token");
+
+        try {
+          const response = await fetch(
+            `https://localhost:7169/api/Match/${matchId}/resolve`,
+            {
+              method: "POST",
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ winnerId: winnerId }),
+            },
+          );
+
+          const result = await response.json();
+
+          if (response.ok) {
+            alert(result.message);
+            location.reload(); // Refresh the page to show the new bracket/winners
+          } else {
+            alert(result.error || "Failed to resolve match.");
+          }
+        } catch (err) {
+          alert("Error connecting to server.");
+        }
+      }
+    </script>
+    <!-- Bootstrap core JavaScript-->
+    <script src="https://cdn.jsdelivr.net/npm/jwt-decode/build/jwt-decode.min.js"></script>
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script src="js/sb-admin-2.min.js"></script>
+
+    <!-- Page level plugins -->
+    <script src="vendor/chart.js/Chart.min.js"></script>
+
+    <!-- Page level custom scripts -->
+    <script src="js/demo/chart-area-demo.js"></script>
+    <script src="js/demo/chart-pie-demo.js"></script>
+  </body>
+</html>

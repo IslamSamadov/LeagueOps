@@ -37,7 +37,7 @@
 		<div class="container">
 			<!-- logo -->
 			<a class="site-logo" href="index.html">
-				<h2>League<span style="color: #eda61e;">Ops</span></h2>
+				<h2><span style="color: white;">League</span><span style="color: #eda61e;">Ops</span></h2>
 			</a>
 			<!-- responsive -->
 			<div class="nav-switch">
@@ -45,10 +45,18 @@
 			</div>
 			<!-- site menu -->
 			<nav class="main-menu">
-				<ul>
-					<li><a href="index.html">Home</a></li>
-					<li><a href="login.html">Login</a></li>
-					<li><a href="register.html">Register</a></li>
+				<ul id="menu-list" style="display: flex;">
+					<li style="margin-right: 30px;"><a class="my-class" href="index.html">Home</a></li>
+
+					<li id="auth-links">
+						<a href="login.html">Login</a>
+						<a href="register.html">Register</a>
+					</li>
+
+					<li id="user-profile" style="display: none;">
+						<a href="../admin/index.html" id="username-display"></a>
+						<a href="#" onclick="logout()">Logout</a>
+					</li>
 				</ul>
 			</nav>
 		</div>
@@ -502,6 +510,36 @@
 
 	<!--====== Javascripts & Jquery ======-->
 	<script>
+		document.addEventListener('DOMContentLoaded', () => {
+			const token = localStorage.getItem('token');
+			const authLinks = document.getElementById('auth-links');
+			const userProfile = document.getElementById('user-profile');
+			const usernameDisplay = document.getElementById('username-display');
+
+			if (token) {
+				authLinks.style.display = 'none';
+				userProfile.style.display = 'inline';
+
+				const payload = JSON.parse(atob(token.split('.')[1]));
+
+				// Use the key you found in the console logs
+				const username = payload["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"]
+					|| payload.unique_name
+					|| payload.name
+					|| "User";
+
+				usernameDisplay.innerText = username;
+			} else {
+				// User is not logged in
+				authLinks.style.display = 'block';
+				userProfile.style.display = 'none';
+			}
+		});
+
+		function logout() {
+			localStorage.removeItem('token');
+			window.location.href = 'index.html';
+		}
 		async function fetchTournaments() {
 			try {
 				const response = await fetch('https://localhost:7169/api/Tournament');
@@ -512,7 +550,7 @@
 
 				tournaments.forEach(t => {
 					list.innerHTML += `
-                    <div class="col-md-6">
+                    <div class="col-md-6" style="margin-bottom:20px;">
                         <div class="tournament-item">
                             <div class="ti-notic">${t.game}</div>
                             <div class="ti-content">

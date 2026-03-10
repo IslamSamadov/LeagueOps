@@ -8,6 +8,7 @@
         public DateTime StartDate { get; set; }
         public int MaxTeams { get; set; }
         public string Status { get; set; } = string.Empty;
+        public int TeamCount { get; set; }
         public string OrganizerName { get; set; } = string.Empty;
     }
 }

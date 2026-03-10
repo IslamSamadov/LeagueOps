@@ -37,7 +37,7 @@
     <!-- Page Wrapper -->
     <div id="wrapper">
       <!-- Sidebar -->
-      <ul
+       <ul
         class="navbar-nav sidebar sidebar-dark accordion"
         id="accordionSidebar"
         style="background-color: #0c0d0d !important"
@@ -102,28 +102,15 @@
             >
               <i class="fa fa-bars"></i>
             </button>
-            <div
-              class="d-flex align-items-center justify-content-between mb-4"
-              style="margin-top: 30px"
-            >
-              <h1 class="h3 mb-0 text-gray-800" style="margin-right: 20px">
-                My Tournaments
-              </h1>
 
-              <a href="create.html" class="btn btn-primary shadow-sm">
-                <i class="fas fa-plus fa-sm text-white-50 mr-2"></i> Create New
-                Tournament
-              </a>
-            </div>
+            <h1 class="h3 mb-0 text-gray-800" style="margin-right: 20px">
+              Create New Tournament
+            </h1>
+
             <!-- Topbar Search -->
 
             <!-- Topbar Navbar -->
             <ul class="navbar-nav ml-auto">
-              <!-- Nav Item - Search Dropdown (Visible Only XS) -->
-
-              <div class="topbar-divider d-none d-sm-block"></div>
-
-              <!-- Nav Item - User Information -->
               <li class="nav-item dropdown no-arrow">
                 <a
                   class="nav-link dropdown-toggle"
@@ -169,7 +156,6 @@
             <div
               class="d-sm-flex align-items-center justify-content-between mb-4"
             >
-              <h1 class="h3 mb-0 text-gray-800">Tournaments Table</h1>
               <!-- <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
                                 class="fas fa-download fa-sm text-white-50"></i> Generate Report</a> -->
             </div>
@@ -246,130 +232,61 @@
 
             <!-- Content Row -->
             <div class="row">
-              <!-- Content Column -->
-
-              <!-- Project Card Example -->
-              <!-- <div class="card shadow mb-4">
-                                <div class="card-header py-3">
-                                    <h6 class="m-0 font-weight-bold text-primary">Tournaments</h6>
-                                </div>
-                                <div class="card-body">
-                                    <h4 class="small font-weight-bold">Server Migration <span
-                                            class="float-right">20%</span></h4>
-                                    <div class="progress mb-4">
-                                        <div class="progress-bar bg-danger" role="progressbar" style="width: 20%"
-                                            aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                    <h4 class="small font-weight-bold">Sales Tracking <span
-                                            class="float-right">40%</span></h4>
-                                    <div class="progress mb-4">
-                                        <div class="progress-bar bg-warning" role="progressbar" style="width: 40%"
-                                            aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                    <h4 class="small font-weight-bold">Customer Database <span
-                                            class="float-right">60%</span></h4>
-                                    <div class="progress mb-4">
-                                        <div class="progress-bar" role="progressbar" style="width: 60%"
-                                            aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                    <h4 class="small font-weight-bold">Payout Details <span
-                                            class="float-right">80%</span></h4>
-                                    <div class="progress mb-4">
-                                        <div class="progress-bar bg-info" role="progressbar" style="width: 80%"
-                                            aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                    <h4 class="small font-weight-bold">Account Setup <span
-                                            class="float-right">Complete!</span></h4>
-                                    <div class="progress">
-                                        <div class="progress-bar bg-success" role="progressbar" style="width: 100%"
-                                            aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                </div>
-                            </div> -->
-              <table
-                class="table table-bordered"
-                id="dataTable"
-                width="100%"
-                cellspacing="0"
-              >
-                <thead>
-                  <tr>
-                    <th>Name</th>
-                    <th>Game</th>
-                    <th>Status</th>
-                    <th>Teams</th>
-                    <th style="text-align: center">Actions</th>
-                  </tr>
-                </thead>
-                <tbody id="tournament-list-body"></tbody>
-              </table>
-              <!-- Color System -->
-              <!-- <div class="row">
-                                <div class="col-lg-6 mb-4">
-                                    <div class="card bg-primary text-white shadow">
-                                        <div class="card-body">
-                                            Primary
-                                            <div class="text-white-50 small">#4e73df</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 mb-4">
-                                    <div class="card bg-success text-white shadow">
-                                        <div class="card-body">
-                                            Success
-                                            <div class="text-white-50 small">#1cc88a</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 mb-4">
-                                    <div class="card bg-info text-white shadow">
-                                        <div class="card-body">
-                                            Info
-                                            <div class="text-white-50 small">#36b9cc</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 mb-4">
-                                    <div class="card bg-warning text-white shadow">
-                                        <div class="card-body">
-                                            Warning
-                                            <div class="text-white-50 small">#f6c23e</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 mb-4">
-                                    <div class="card bg-danger text-white shadow">
-                                        <div class="card-body">
-                                            Danger
-                                            <div class="text-white-50 small">#e74a3b</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 mb-4">
-                                    <div class="card bg-secondary text-white shadow">
-                                        <div class="card-body">
-                                            Secondary
-                                            <div class="text-white-50 small">#858796</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 mb-4">
-                                    <div class="card bg-light text-black shadow">
-                                        <div class="card-body">
-                                            Light
-                                            <div class="text-black-50 small">#f8f9fc</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 mb-4">
-                                    <div class="card bg-dark text-white shadow">
-                                        <div class="card-body">
-                                            Dark
-                                            <div class="text-white-50 small">#5a5c69</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div> -->
+              <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                  <h6 class="m-0 font-weight-bold text-primary">
+                    Create New Tournament
+                  </h6>
+                </div>
+                <div class="card-body">
+                  <form id="create-tournament-form">
+                    <div class="form-group">
+                      <label>Tournament Name</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="name"
+                        required
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label>Game</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="game"
+                        required
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label>Start Date</label>
+                      <input
+                        type="date"
+                        class="form-control"
+                        id="startDate"
+                        required
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label>Max Teams</label>
+                      <select class="form-control" id="maxTeams" required>
+                        <option value="" disabled selected>
+                          Select bracket size...
+                        </option>
+                        <option value="2">2 Teams (Finals only)</option>
+                        <option value="4">4 Teams</option>
+                        <option value="8">8 Teams (Quarterfinals)</option>
+                        <option value="16">16 Teams</option>
+                        <option value="32">32 Teams</option>
+                        <option value="64">64 Teams</option>
+                      </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                      Create Tournament
+                    </button>
+                  </form>
+                </div>
+              </div>
             </div>
           </div>
           <!-- /.container-fluid -->
@@ -427,6 +344,8 @@
       </div>
     </div>
 
+    <!-- Bootstrap core JavaScript-->
+
     <script>
       function logout() {
         // 1. Clear the token
@@ -435,61 +354,65 @@
         // 2. Redirect to index
         window.location.href = "../index/index.html";
       }
-      async function loadTournaments() {
-        const token = localStorage.getItem("token");
-        const tbody = document.getElementById("tournament-list-body");
+      document
+        .getElementById("create-tournament-form")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
 
-        try {
+          const tournamentData = {
+            name: document.getElementById("name").value,
+            game: document.getElementById("game").value,
+            startDate: document.getElementById("startDate").value,
+            maxTeams: parseInt(document.getElementById("maxTeams").value),
+            status: "Upcoming", // Default status
+          };
+
+          const token = localStorage.getItem("token");
+
+          const maxTeams = parseInt(document.getElementById("maxTeams").value);
+          const validCounts = [2, 4, 8, 16, 32, 64];
+
+          if (!validCounts.includes(maxTeams)) {
+            alert(
+              "Invalid bracket size! Max teams must be 2, 4, 8, 16, 32, or 64.",
+            );
+            return; // Stops the form from submitting to the API
+          }
+
           const response = await fetch(
-            "https://localhost:7169/api/Tournament/my",
+            "https://localhost:7169/api/Tournament",
             {
-              method: "GET",
+              method: "POST",
               headers: {
                 Authorization: `Bearer ${token}`,
                 "Content-Type": "application/json",
               },
+              body: JSON.stringify(tournamentData),
             },
           );
 
-          if (!response.ok) throw new Error("Failed to fetch");
+          if (response.ok) {
+            alert("Tournament created successfully!");
+            window.location.href = "index.html";
+          } else if (response.status === 400) {
+            // Catch the C# Validation Errors
+            const problemDetails = await response.json();
+            let errorMessage = "Validation Failed:\n";
 
-          const tournaments = await response.json();
-          tbody.innerHTML = ""; // Clear loading spinner or old data
-          if (tournaments.length === 0) {
-            tbody.innerHTML =
-              '<tr><td colspan="5" class="text-center">You haven\'t created any tournaments yet. <a href="create.html">Create one now!</a></td></tr>';
-            return;
+            // Loop through the errors object ASP.NET returns
+            if (problemDetails.errors) {
+              for (const field in problemDetails.errors) {
+                errorMessage += `- ${problemDetails.errors[field].join(", ")}\n`;
+              }
+            } else {
+              errorMessage = problemDetails.title || "Bad Request";
+            }
+
+            alert(errorMessage);
+          } else {
+            alert("An unexpected error occurred.");
           }
-
-          tournaments.forEach((t) => {
-            tbody.innerHTML += `
-                    <tr>
-                        <td>${t.name}</td>
-                        <td>${t.game}</td>
-                        <td><span class="badge badge-primary">${t.status || "Upcoming"}</span></td>
-                        <td>
-                            ${t.teamCount > 0 ? `${t.teamCount} /${t.maxTeams}` : '<span class="text-muted">No teams yet</span>'}
-                        </td>
-                        <td style="display: flex; justify-self: center; justify-content: space-around; width: 100%;">
-                                      <a href="details.html?id=${t.id}" class="btn btn-primary btn-sm">
-                        <i class="fas fa-eye"></i> Manage
-                         </a>
-                            <button class="btn btn-danger btn-sm" onclick="deleteTournament(${t.id})">
-                                <i class="fas fa-trash"></i> Delete
-                            </button>
-                        </td>
-                    </tr>
-                `;
-          });
-        } catch (err) {
-          console.error(err);
-          tbody.innerHTML =
-            '<tr><td colspan="5" class="text-center text-danger">Error loading tournaments.</td></tr>';
-        }
-      }
-
-      // Call the function when the page loads
-      document.addEventListener("DOMContentLoaded", loadTournaments);
+        });
 
       function displayUser() {
         const token = localStorage.getItem("token");
@@ -516,42 +439,7 @@
 
       // Call this when the page loads
       document.addEventListener("DOMContentLoaded", displayUser);
-
-      async function deleteTournament(id) {
-        // 1. Confirm with the user before destroying data
-        if (!confirm("Are you sure you want to delete this tournament?")) {
-          return;
-        }
-
-        const token = localStorage.getItem("token");
-
-        try {
-          const response = await fetch(
-            `https://localhost:7169/api/Tournament/${id}`,
-            {
-              method: "DELETE",
-              headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json",
-              },
-            },
-          );
-
-          if (response.ok) {
-            alert("Tournament deleted successfully!");
-            // 2. Refresh the table list immediately after success
-            loadTournaments();
-          } else {
-            const errorData = await response.json();
-            alert(errorData.error || "Failed to delete tournament.");
-          }
-        } catch (err) {
-          console.error("Error deleting:", err);
-          alert("An error occurred while deleting.");
-        }
-      }
     </script>
-    <!-- Bootstrap core JavaScript-->
     <script src="https://cdn.jsdelivr.net/npm/jwt-decode/build/jwt-decode.min.js"></script>
     <script src="vendor/jquery/jquery.min.js"></script>
     <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>

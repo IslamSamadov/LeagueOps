@@ -42,6 +42,11 @@ namespace TournamentManager.API.Controllers
                 return StatusCode(403, new { Error = "Only the tournament organizer can delete teams." });
             }
 
+            if (tournament.Status != "Draft")
+            {
+                return BadRequest(new { Error = $"Cannot add teams: The tournament '{tournament.Name}' has already started." });
+            }
+
             int currentTeamCount = tournament.Teams?.Count ?? 0;
 
             if(currentTeamCount >= tournament.MaxTeams)

@@ -11279,3 +11279,12 @@ footer.sticky-footer .copyright {
 body.sidebar-toggled footer.sticky-footer {
   width: 100%;
 }
+
+.champion-highlight {
+    border: 2px solid #000; /* Gold border */
+    background-color: rgba(255, 215, 0, 0.1); /* Subtle gold background */
+    padding: 5px;
+    border-radius: 4px;
+    font-weight: bold;
+    color: #FFD700;
+}
